@@ -38,7 +38,7 @@ def _ticker_increase_rate(ticker):
 
 def _c_divide_s(ticker):
     """ (Close - EMA20) / EMA20 * 100 """
-    prices = get_prices(ticker, 21)
+    prices = get_prices(ticker, 300)
     close = prices[-1][3]
     ema20 = calc_ema(prices, 20)[-1]
     return (close - ema20) / ema20 * 100
@@ -46,7 +46,7 @@ def _c_divide_s(ticker):
 
 def _s_divide_m(ticker):
     """ (EMA20 - EMA60) / EMA60 * 100 """
-    prices = get_prices(ticker, 61)
+    prices = get_prices(ticker, 300)
     ema20 = calc_ema(prices, 20)[-1]
     ema60 = calc_ema(prices, 60)[-1]
     return (ema20 - ema60) / ema60 * 100
@@ -54,7 +54,7 @@ def _s_divide_m(ticker):
 
 def _m_divide_l(ticker):
     """ (EMA60 - EMA120) / EMA120 * 100 """
-    prices = get_prices(ticker, 121)
+    prices = get_prices(ticker, 300)
     ema60 = calc_ema(prices, 60)[-1]
     ema120 = calc_ema(prices, 120)[-1]
     return (ema60 - ema120) / ema120 * 100

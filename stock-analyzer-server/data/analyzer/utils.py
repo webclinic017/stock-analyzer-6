@@ -80,10 +80,11 @@ def calc_boll(prices):
 
 
 if __name__ == '__main__':
-    ticker = '0700.HK'
-    prices = get_prices(ticker, 100)
+    ticker = '3690.HK'
+    prices = get_prices(ticker, 300)
     print(calc_ma(prices)[::-1])
-    print(calc_ema(prices)[::-1])
+    print(calc_ema(prices, 120)[::-1])
+    print(calc_ema(prices, 60)[::-1])
     print(calc_macd(prices)[-1][::-1])
     print(calc_boll(prices)[0][::-1])
 
