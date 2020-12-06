@@ -8,3 +8,4 @@ pandas
 numpy
 yfinance
 akshare
+stock_pandas

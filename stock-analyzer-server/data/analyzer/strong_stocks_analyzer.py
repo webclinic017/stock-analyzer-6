@@ -2,12 +2,13 @@
 Analyze strong stock indicators value
 """
 
-from data.analyzer.utils import calc_ema
-from data.utils import Connect, setup_strong_stock_table
-from data.tickers import tickers
-
-from tqdm import tqdm
 import akshare as ak
+from tqdm import tqdm
+
+from data.analyzer.utils import calc_ema
+from data.analyzer.utils import get_prices
+from data.tickers import tickers
+from data.utils import Connect, setup_strong_stock_table
 
 
 def _hsi_baseline():
@@ -28,26 +29,8 @@ def _hsi_baseline():
     return increase_rate_1d, increase_rate_5d, increase_rate_20d
 
 
-def _get_ticker_prices(ticker, look_back_days, date_descending=True):
-    sql = """
-        SELECT adjclose
-        FROM ohlc
-        WHERE ticker = '{}'
-        ORDER BY DATE Desc
-        LIMIT {}
-    """.format(ticker, look_back_days)
-    prices = []
-    with Connect() as conn:
-        cur = conn.execute(sql)
-        for row in cur.fetchall():
-            prices.append(row[0])
-    if not date_descending:
-        prices = prices[::-1]
-    return prices
-
-
 def _ticker_increase_rate(ticker):
-    prices = _get_ticker_prices(ticker, 21)
+    prices = [p[3] for p in get_prices(ticker, 21)][::-1]
     increase_rate_1d = (prices[0] - prices[1]) / prices[1] * 100
     increase_rate_5d = (prices[0] - prices[5]) / prices[5] * 100
     increase_rate_20d = (prices[0] - prices[20]) / prices[20] * 100
@@ -56,15 +39,15 @@ def _ticker_increase_rate(ticker):
 
 def _c_divide_s(ticker):
     """ (Close - EMA20) / EMA20 * 100 """
-    prices = _get_ticker_prices(ticker, 21, date_descending=False)
-    close = prices[-1]
+    prices = get_prices(ticker, 21)
+    close = prices[-1][3]
     ema20 = calc_ema(prices, 20)[-1]
     return (close - ema20) / ema20 * 100
 
 
 def _s_divide_m(ticker):
     """ (EMA20 - EMA60) / EMA60 * 100 """
-    prices = _get_ticker_prices(ticker, 61, date_descending=False)
+    prices = get_prices(ticker, 61)
     ema20 = calc_ema(prices, 20)[-1]
     ema60 = calc_ema(prices, 60)[-1]
     return (ema20 - ema60) / ema60 * 100
@@ -72,15 +55,15 @@ def _s_divide_m(ticker):
 
 def _m_divide_l(ticker):
     """ (EMA60 - EMA120) / EMA120 * 100 """
-    prices = _get_ticker_prices(ticker, 121, date_descending=False)
+    prices = get_prices(ticker, 121)
     ema60 = calc_ema(prices, 60)[-1]
     ema120 = calc_ema(prices, 120)[-1]
     return (ema60 - ema120) / ema120 * 100
 
 
 def _price_change(ticker):
-    prices = _get_ticker_prices(ticker, 2)
-    return prices[0] - prices[1], (prices[0] / prices[1] - 1) * 100
+    prices = [p[3] for p in get_prices(ticker, 2)]
+    return prices[1] - prices[0], (prices[1] / prices[0] - 1) * 100
 
 
 def _ticker_name(ticker):
@@ -108,7 +91,7 @@ def _analyze_ticker(ticker):
     hsi_increase_1d, hsi_increase_5d, hsi_increase_20d = _hsi_baseline()
     ticker_increase_1d, ticker_increase_5d, ticker_increase_20d = _ticker_increase_rate(ticker)
     name = _ticker_name(ticker)
-    price = _get_ticker_prices(ticker, 1)[0]
+    price = get_prices(ticker, 1)[0][3]
     increase, increase_rate = _price_change(ticker)
     rel_1d = ticker_increase_1d - hsi_increase_1d
     rel_5d = ticker_increase_5d - hsi_increase_5d
