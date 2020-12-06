@@ -5,7 +5,9 @@ Analyze strong stock indicators value
 from tqdm import tqdm
 
 from data.analyzer.utils import calc_ema
-from data.analyzer.utils import get_prices, get_price_change, get_last_price, get_ticker_name, get_ticker_volume
+from data.analyzer.utils import (
+    get_prices, get_price_change, get_last_price, get_ticker_name, get_ticker_volume
+)
 from data.tickers import tickers
 from data.utils import Connect, setup_strong_stock_table
 
@@ -61,18 +63,18 @@ def _m_divide_l(ticker):
 
 
 def _analyze_ticker(ticker):
-    hsi_increase_1d, hsi_increase_5d, hsi_increase_20d = _hsi_baseline()
-    ticker_increase_1d, ticker_increase_5d, ticker_increase_20d = _ticker_increase_rate(ticker)
     name = get_ticker_name(ticker)
     price = get_last_price(ticker)
     increase, increase_rate = get_price_change(ticker)
+    volume = get_ticker_volume(ticker)
+    hsi_increase_1d, hsi_increase_5d, hsi_increase_20d = _hsi_baseline()
+    ticker_increase_1d, ticker_increase_5d, ticker_increase_20d = _ticker_increase_rate(ticker)
     rel_1d = ticker_increase_1d - hsi_increase_1d
     rel_5d = ticker_increase_5d - hsi_increase_5d
     rel_20d = ticker_increase_20d - hsi_increase_20d
     cs = _c_divide_s(ticker)
     sm = _s_divide_m(ticker)
     ml = _m_divide_l(ticker)
-    volume = get_ticker_volume(ticker)
     return [ticker, name, price, increase, increase_rate, rel_1d, rel_5d, rel_20d, cs, sm, ml, volume]
 
 

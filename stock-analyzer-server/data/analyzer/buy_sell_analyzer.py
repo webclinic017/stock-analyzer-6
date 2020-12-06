@@ -1,7 +1,12 @@
-from data.analyzer.utils import get_prices, calc_boll, calc_macd
-from data.tickers import tickers
-
 import pandas as pd
+
+from data.analyzer.utils import calc_boll, calc_macd
+from data.analyzer.utils import (
+    get_prices, get_price_change, get_last_price, get_ticker_name, get_ticker_volume
+)
+from data.tickers import tickers
+from data.utils import setup_buy_sell_table, Connect
+from tqdm import tqdm
 
 
 # Buy sell based on boll values
@@ -34,6 +39,31 @@ def _macd_analysis(ticker):
     return ''
 
 
+def _analyse_buy_sell(ticker):
+    try:
+        name = get_ticker_name(ticker)
+        price = get_last_price(ticker)
+        increase, increase_rate = get_price_change(ticker)
+        volume = get_ticker_volume(ticker)
+        boll = _boll_analysis(ticker)
+        macd = _macd_analysis(ticker)
+        return [ticker, name, price, increase, increase_rate, boll, macd, volume]
+    except:
+        print('Skip {}'.format(get_ticker_name(ticker)))
+
+
+def _save_ticker_results(data):
+    setup_buy_sell_table()
+    with Connect() as conn:
+        conn.executemany('INSERT INTO buy_sell VALUES (?,?,?,?,?,?,?,?)', data)
+        conn.commit()
+
+
+def analyse():
+    print('Analyze buy/sell indicators ...')
+    data = [_analyse_buy_sell(ticker) for ticker in tqdm(tickers)]
+    _save_ticker_results(data)
+
+
 if __name__ == '__main__':
-    for ticker in tickers:
-        print(ticker, _boll_analysis(ticker), _macd_analysis(ticker))
+    analyse()
