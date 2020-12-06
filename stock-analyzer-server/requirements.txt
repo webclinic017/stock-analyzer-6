@@ -1,0 +1,10 @@
+flask
+flask-cors
+yahoo_historical
+pyyaml
+tqdm
+requests
+pandas
+numpy
+yfinance
+akshare
