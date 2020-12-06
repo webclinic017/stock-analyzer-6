@@ -84,3 +84,21 @@ def setup_strong_stock_table():
     with Connect() as conn:
         conn.execute(drop_sql)
         conn.execute(create_sql)
+
+
+def setup_buy_sell_table():
+    """ Clear data of strong stocks table """
+    drop_sql = """DROP TABLE IF EXISTS buy_sell;"""
+    create_sql = """CREATE TABLE IF NOT EXISTS buy_sell (
+        ticker text, 
+        name text,
+        price real,
+        increase real,
+        increase_rate real,
+        boll real,
+        macd text,
+        volume real
+    );"""
+    with Connect() as conn:
+        conn.execute(drop_sql)
+        conn.execute(create_sql)

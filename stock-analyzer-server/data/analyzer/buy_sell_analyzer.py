@@ -21,9 +21,9 @@ def _macd_analysis(ticker):
     prices = get_prices(ticker, 100)
     dif, dea, macd = calc_macd(prices)
     try:
-        if macd[-2] == min(macd[-3], macd[-2], macd[-1]):
+        if macd[-2] < 0 and macd[-2] == min(macd[-3], macd[-2], macd[-1]):
             return 'TU'  # Turn up
-        elif macd[-2] == max(macd[-3], macd[-2], macd[-1]):
+        elif macd[-2] > 0 and macd[-2] == max(macd[-3], macd[-2], macd[-1]):
             return 'TD'  # Turn down
         elif dif[-1] >= dea[-1] and dif[-2] <= dea[-2]:
             return 'GC'  # Gold cross
