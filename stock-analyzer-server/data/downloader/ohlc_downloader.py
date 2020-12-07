@@ -40,4 +40,5 @@ def download():
 
 
 if __name__ == '__main__':
-    download()
+    # download()
+    print(_download_ticker_data('^HSI'))

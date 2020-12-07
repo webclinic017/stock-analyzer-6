@@ -22,8 +22,11 @@ class Navbar extends Component {
         <MDBNavbarToggler onClick={this.toggleCollapse} />
         <MDBCollapse id='navbarCollapse3' isOpen={this.state.isOpen} navbar>
           <MDBNavbarNav left>
-            <MDBNavItem active>
+            <MDBNavItem>
               <MDBNavLink to='/strong-stocks'>强势指标</MDBNavLink>
+            </MDBNavItem>
+            <MDBNavItem>
+              <MDBNavLink to='/buy-sell-points'>买点卖点</MDBNavLink>
             </MDBNavItem>
           </MDBNavbarNav>
         </MDBCollapse>

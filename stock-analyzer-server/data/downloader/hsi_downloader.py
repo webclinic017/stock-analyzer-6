@@ -3,35 +3,20 @@ Download 10 years Heng Seng Index (HSI) OHLC data
 """
 
 import datetime
-import time
-from io import StringIO
 
-import pandas as pd
-import requests
+from yahoo_historical import Fetcher
 
 from data.utils import Connect, setup_hsi_table
-import traceback
-
-url = 'https://query1.finance.yahoo.com/v7/finance/download/%5EHSI' \
-      '?period1={period1}&period2={period2}&interval=1d&events=history&includeAdjustedClose=true'
 
 
 def _download_hsi_data():
+    """ Download data for ticker """
     today = datetime.date.today()
     start = [today.year - 10, today.month, today.day]
-    end = [today.year, today.month, today.day]
-    period1 = int(time.mktime(datetime.date(*start).timetuple()))
-    period2 = int(time.mktime(datetime.date(*end).timetuple()))
-    for _ in range(5):
-        try:
-            res = requests.get(url.format(period1=period1, period2=period2))
-            data = StringIO(res.content.decode('utf-8'))
-            data = pd.read_csv(data, sep=',')
-            return data
-        except:
-            traceback.print_exc()
-            print('Something wrong with hsi down...')
-            time.sleep(10)
+    end = [today.year, today.month, today.day + 1]
+    data = Fetcher('^HSI', start, end)
+    data = data.get_historical()
+    return data
 
 
 def _save_hsi_data(data):
