@@ -30,9 +30,9 @@ def _macd_analysis(ticker):
             return 'TU'  # Turn up
         elif macd[-2] > 0 and macd[-2] == max(macd[-3], macd[-2], macd[-1]):
             return 'TD'  # Turn down
-        elif dif[-1] >= dea[-1] and dif[-2] <= dea[-2]:
+        elif 0 > dif[-1] >= dea[-1] and dif[-2] <= dea[-2]:
             return 'GC'  # Gold cross
-        elif dif[-1] <= dea[-1] and dif[-2] >= dea[-2]:
+        elif 0 < dif[-1] <= dea[-1] and dif[-2] >= dea[-2]:
             return 'DC'  # Dead cross
     except:
         return ''
