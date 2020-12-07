@@ -27,7 +27,7 @@ python prepare_data.py
 
 【步骤三】：启动后端服务器
 ```
-python main.py
+python server.py
 ```
 启动过后，可以打开浏览器，输入 http://localhost:5000/
 如果看到 ‘Server is alive’ 字样，说明后端启动成功
