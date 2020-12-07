@@ -6,7 +6,7 @@ import datetime
 
 from yahoo_historical import Fetcher
 
-from data.utils import Connect, setup_hsi_table
+from data.db import Connect, setup_hsi_table
 
 
 def _download_hsi_data():

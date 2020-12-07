@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { SERVER_BASE_URL } from '../../constants';
 import { numberFormatter, numberWithSignFormatter, pctWithSignFormatter, volumeFormatter, 
-  boldPosGreenNegRedCellStyle, bgGreenRedColorMapCellStyle } from '../../../common-grid/formatter';
+  priceAndChangeCellStyle, bgGreenRedColorMapCellStyle } from '../../../common-grid/formatter';
 
 // AG Grid
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -57,11 +57,11 @@ const StrongStocks = () => {
         >
           <AgGridColumn field='id'></AgGridColumn>
           <AgGridColumn field='name'></AgGridColumn>
-          <AgGridColumn field='price' cellStyle={boldPosGreenNegRedCellStyle} headerName='Last Price'
+          <AgGridColumn field='price' cellStyle={priceAndChangeCellStyle} headerName='Last Price'
             type='rightAligned' valueFormatter={numberFormatter}></AgGridColumn>
-          <AgGridColumn field='changeRate' cellStyle={boldPosGreenNegRedCellStyle} headerName='Change (%)'
+          <AgGridColumn field='changeRate' cellStyle={priceAndChangeCellStyle} headerName='Change (%)'
             type='rightAligned' valueFormatter={pctWithSignFormatter}></AgGridColumn>
-          <AgGridColumn field='change' cellStyle={boldPosGreenNegRedCellStyle} headerName='Change'
+          <AgGridColumn field='change' cellStyle={priceAndChangeCellStyle} headerName='Change'
             type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
           <AgGridColumn field='rel1D' cellStyle={bgGreenRedColorMapCellStyle(5)}
             type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>

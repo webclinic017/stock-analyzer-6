@@ -3,6 +3,7 @@ from data.downloader.ohlc_downloader import download as download_stock_ohlc_data
 from data.downloader.hsi_downloader import download as download_hsi_data
 
 from data.analyzer.strong_stocks_analyzer import analyze as analyze_strong_stocks
+from data.analyzer.buy_sell_analyzer import analyse as analyze_buy_sell_points
 
 
 def _download_all_raw_data():
@@ -13,6 +14,7 @@ def _download_all_raw_data():
 
 def _analyze_all_data():
     analyze_strong_stocks()
+    analyze_buy_sell_points()
 
 
 def prepare_all_data():

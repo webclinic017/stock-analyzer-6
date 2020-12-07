@@ -9,7 +9,7 @@ from data.analyzer.utils import (
     get_prices, get_price_change, get_last_price, get_ticker_name, get_ticker_volume
 )
 from data.tickers import tickers
-from data.utils import Connect, setup_strong_stock_table
+from data.db import Connect, setup_strong_stock_table
 
 
 def _hsi_baseline():

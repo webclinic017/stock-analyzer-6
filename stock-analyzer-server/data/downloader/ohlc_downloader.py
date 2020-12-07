@@ -8,7 +8,7 @@ from tqdm import tqdm
 from yahoo_historical import Fetcher
 
 from data.tickers import tickers
-from data.utils import Connect, setup_ohlc_table
+from data.db import Connect, setup_ohlc_table
 
 
 def _download_ticker_data(ticker):

@@ -2,7 +2,7 @@ import pandas as pd
 from stock_pandas import StockDataFrame
 
 from data.tickers import get_stock_hk_spot
-from data.utils import Connect
+from data.db import Connect
 
 
 def get_prices(ticker, days):

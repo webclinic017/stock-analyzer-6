@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from data.tickers import get_stock_hk_spot
 from data.tickers import tickers
-from data.utils import Connect, setup_stock_info_table
+from data.db import Connect, setup_stock_info_table
 
 
 def _download_stock_info(ticker):
