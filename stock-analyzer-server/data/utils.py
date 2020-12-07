@@ -93,10 +93,8 @@ def setup_buy_sell_table():
         ticker text, 
         name text,
         price real,
-        increase real,
         increase_rate real,
         boll real,
-        macd text,
         volume real
     );"""
     with Connect() as conn:

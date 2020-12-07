@@ -43,11 +43,10 @@ def _analyse_buy_sell(ticker):
     try:
         name = get_ticker_name(ticker)
         price = get_last_price(ticker)
-        increase, increase_rate = get_price_change(ticker)
+        _, increase_rate = get_price_change(ticker)
         volume = get_ticker_volume(ticker)
         boll = _boll_analysis(ticker)
-        macd = _macd_analysis(ticker)
-        return [ticker, name, price, increase, increase_rate, boll, macd, volume]
+        return [ticker, name, price, increase_rate, boll, volume]
     except:
         print('Skip {}'.format(get_ticker_name(ticker)))
 
@@ -66,4 +65,4 @@ def analyse():
 
 
 if __name__ == '__main__':
-    analyse()
+    print(_analyse_buy_sell('0700.HK'))

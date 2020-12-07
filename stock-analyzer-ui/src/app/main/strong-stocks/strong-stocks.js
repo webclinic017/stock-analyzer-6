@@ -3,46 +3,12 @@ import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
 
 import { SERVER_BASE_URL } from '../../constants';
+import { numberFormatter, numberWithSignFormatter, pctWithSignFormatter, volumeFormatter, 
+  boldPosGreenNegRedCellStyle, bgGreenRedColorMapCellStyle } from '../../../common-grid/formatter';
 
 // AG Grid
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
-
-const priceFormatter = ({ value }) => `${(parseFloat(value).toFixed(2))}`;
-const pctFormatter = ({ value }) => `${value > 0 ? '+' : ''}${(parseFloat(value).toFixed(2))}%`;
-const numberFormatter = ({ value }) => `${value > 0 ? '+' : ''}${(parseFloat(value).toFixed(2))}`;
-const volumeFormatter = ({ value }) => {
-  if (value > 1e9) {
-    return `${(parseFloat(value / 1e9).toFixed(2))} bn`
-  } else {
-    return `${(parseFloat(value / 1e6).toFixed(2))} mm`
-  }
-};
-
-const numberCellStyle = threshold => params => {
-  let degree = Math.min(Math.abs(params.value) / threshold, 1);
-  if (params.value > 0) {
-    return {
-      backgroundColor: `rgb(0, ${degree * 64 + 144}, 0)`, color: '#fff'
-    };
-  } else if (params.value < 0) {
-    return {
-      backgroundColor: `rgb(${degree * 64 + 144}, 0, 0)`, color: '#fff'
-    };
-  } else {
-    return {};
-  }
-};
-const priceCellStyle = params => {
-  var val = params.node.data.change;
-  if (val > 0) {
-    return { color: 'green', fontWeight: 'bold' };
-  } else if (val < 0) {
-    return { color: 'red', fontWeight: 'bold' };
-  } else {
-    return {};
-  }
-};
 
 const StrongStocks = () => {
   const [gridApi, setGridApi] = useState(null);
@@ -79,12 +45,6 @@ const StrongStocks = () => {
   }, []);
 
   const defaultColDef = { sortable: true, filter: true, resizable: true };
-  const columnTypes = {
-    priceColumn: { valueFormatter: priceFormatter },
-    pctColumn: { valueFormatter: pctFormatter },
-    numberColumn: { valueFormatter: numberFormatter },
-    volumeColume: { valueFormatter: volumeFormatter }
-  };
 
   return (
     <div>
@@ -94,28 +54,29 @@ const StrongStocks = () => {
           onGridReady={onGridReady}
           onFirstDataRendered={onFirstDataRendered}
           defaultColDef={defaultColDef}
-          columnTypes={columnTypes}
         >
           <AgGridColumn field='id'></AgGridColumn>
           <AgGridColumn field='name'></AgGridColumn>
-          <AgGridColumn field='price' cellStyle={priceCellStyle} headerName='Last Price'
-            type={['priceColumn', 'rightAligned']}></AgGridColumn>
-          <AgGridColumn field='changeRate' cellStyle={priceCellStyle} headerName='Change (%)'
-            type={['pctColumn', 'rightAligned']}></AgGridColumn>
-          <AgGridColumn field='change' cellStyle={priceCellStyle} headerName='Change'
-            type={['numberColumn', 'rightAligned']}></AgGridColumn>
-          <AgGridColumn field='rel1D' cellStyle={numberCellStyle(5)}
-            type={['numberColumn', 'rightAligned']}></AgGridColumn>
-          <AgGridColumn field='rel5D' cellStyle={numberCellStyle(20)}
-            type={['numberColumn', 'rightAligned']}></AgGridColumn>
-          <AgGridColumn field='rel20D' cellStyle={numberCellStyle(50)} type={['numberColumn', 'rightAligned']}></AgGridColumn>
-          <AgGridColumn field='cs' cellStyle={numberCellStyle(15)} headerName='C/S'
-            type={['numberColumn', 'rightAligned']}></AgGridColumn>
-          <AgGridColumn field='sm' cellStyle={numberCellStyle(10)} headerName='S/M'
-            type={['numberColumn', 'rightAligned']}></AgGridColumn>
-          <AgGridColumn field='ml' cellStyle={numberCellStyle(8)} headerName='M/L'
-            type={['numberColumn', 'rightAligned']}></AgGridColumn>
-          <AgGridColumn field='volume' type={['volumeColume', 'rightAligned']}></AgGridColumn>
+          <AgGridColumn field='price' cellStyle={boldPosGreenNegRedCellStyle} headerName='Last Price'
+            type='rightAligned' valueFormatter={numberFormatter}></AgGridColumn>
+          <AgGridColumn field='changeRate' cellStyle={boldPosGreenNegRedCellStyle} headerName='Change (%)'
+            type='rightAligned' valueFormatter={pctWithSignFormatter}></AgGridColumn>
+          <AgGridColumn field='change' cellStyle={boldPosGreenNegRedCellStyle} headerName='Change'
+            type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
+          <AgGridColumn field='rel1D' cellStyle={bgGreenRedColorMapCellStyle(5)}
+            type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
+          <AgGridColumn field='rel5D' cellStyle={bgGreenRedColorMapCellStyle(20)}
+            type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
+          <AgGridColumn field='rel20D' cellStyle={bgGreenRedColorMapCellStyle(50)}
+            type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
+          <AgGridColumn field='cs' cellStyle={bgGreenRedColorMapCellStyle(15)} headerName='C/S'
+            type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
+          <AgGridColumn field='sm' cellStyle={bgGreenRedColorMapCellStyle(10)} headerName='S/M'
+            type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
+          <AgGridColumn field='ml' cellStyle={bgGreenRedColorMapCellStyle(8)} headerName='M/L'
+            type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
+          <AgGridColumn field='volume' type='rightAligned'
+            valueFormatter={volumeFormatter}></AgGridColumn>
         </AgGridReact>
       </div>
       <br />
