@@ -15,7 +15,7 @@ def _download_ticker_data(ticker):
     """ Download data for ticker """
     today = datetime.date.today()
     start = [today.year-10, today.month, today.day]
-    end = [today.year, today.month, today.day]
+    end = [today.year, today.month, today.day+1]
     data = Fetcher(ticker, start, end)
     data = data.get_historical()
     cols = ['Ticker'] + list(data.columns)

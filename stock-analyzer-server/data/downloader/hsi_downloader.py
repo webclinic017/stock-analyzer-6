@@ -10,6 +10,7 @@ import pandas as pd
 import requests
 
 from data.utils import Connect, setup_hsi_table
+import traceback
 
 url = 'https://query1.finance.yahoo.com/v7/finance/download/%5EHSI' \
       '?period1={period1}&period2={period2}&interval=1d&events=history&includeAdjustedClose=true'
@@ -28,6 +29,8 @@ def _download_hsi_data():
             data = pd.read_csv(data, sep=',')
             return data
         except:
+            traceback.print_exc()
+            print('Something wrong with hsi down...')
             time.sleep(10)
 
 
