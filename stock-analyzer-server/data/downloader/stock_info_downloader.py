@@ -2,16 +2,15 @@
 Download interested tickers name info
 """
 
-import akshare as ak
 from tqdm import tqdm
 
+from data.tickers import get_stock_hk_spot
 from data.tickers import tickers
 from data.utils import Connect, setup_stock_info_table
 
-df = ak.stock_hk_spot()
-
 
 def _download_stock_info(ticker):
+    df = get_stock_hk_spot()
     name = list(df[df.symbol == '0{}'.format(ticker[:4])]['name'])[0]
     return [ticker, name]
 
