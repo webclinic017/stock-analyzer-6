@@ -11,6 +11,35 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
 
 
+const macdSignCellStyle = ({ value }) => {
+  const colorMap = {
+    'TU': `rgb(0, 192, 0)`, 'GC': `rgb(0, 224, 0)`,
+    'TD': `rgb(192, 0, 0)`, 'DC': `rgb(224, 0, 0)`,
+  }
+  if (value !== '') {
+    return {
+      backgroundColor: colorMap[value], color: '#fff'
+    };
+  } else {
+    return {};
+  }
+};
+
+const kdjSignCellStyle = ({ value }) => {
+  const colorMap = {
+    'LGC': `rgb(0, 224, 0)`,
+    'HDC': `rgb(224, 0, 0)`,
+  }
+  if (value !== '') {
+    return {
+      backgroundColor: colorMap[value], color: '#fff'
+    };
+  } else {
+    return {};
+  }
+};
+
+
 const BuySellPoints = () => {
   const [gridApi, setGridApi] = useState(null);
   const [rowData, setRowData] = useState([]);
@@ -66,10 +95,12 @@ const BuySellPoints = () => {
             type='rightAligned' valueFormatter={pctWithSignFormatter}></AgGridColumn>
           <AgGridColumn field='bollRel1D' cellStyle={segmentColorCellStyle(0.9, -0.9, 0.3)} headerName='Boll Rel1D'
             type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
+          <AgGridColumn field='macd1D' type='rightAligned' cellStyle={macdSignCellStyle}></AgGridColumn>
+          <AgGridColumn field='kdj1D' type='rightAligned' cellStyle={kdjSignCellStyle}></AgGridColumn>
           <AgGridColumn field='volume' type='rightAligned'
             valueFormatter={volumeFormatter}></AgGridColumn>
         </AgGridReact>
-      </div>
+      </div>  
     </div>
   );
 };

@@ -79,6 +79,15 @@ def calc_boll(prices):
     return boll, lower, upper
 
 
+def calc_kdj(prices):
+    df = pd.DataFrame(prices, columns=['open', 'high', 'low', 'close'])
+    stock = StockDataFrame(df)
+    k = list(stock.exec('kdj.k'))
+    d = list(stock.exec('kdj.d'))
+    j = list(stock.exec('kdj.j'))
+    return k, d, j
+
+
 if __name__ == '__main__':
     ticker = '3690.HK'
     prices = get_prices(ticker, 300)
@@ -87,4 +96,5 @@ if __name__ == '__main__':
     print(calc_ema(prices, 60)[::-1])
     print(calc_macd(prices)[-1][::-1])
     print(calc_boll(prices)[0][::-1])
+    print(calc_kdj(prices)[0][::-1])
 

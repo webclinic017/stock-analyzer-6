@@ -95,6 +95,8 @@ def setup_buy_sell_table():
         price real,
         increase_rate real,
         boll_rel_1d real, 
+        macd_1d text,
+        kdj_1d text,
         volume real
     );"""
     with Connect() as conn:

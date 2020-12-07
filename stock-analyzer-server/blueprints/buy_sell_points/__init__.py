@@ -12,7 +12,7 @@ def index():
         FROM buy_sell
     """
     data = []
-    keys = ['id', 'name', 'price', 'changeRate', 'bollRel1D', 'volume']
+    keys = ['id', 'name', 'price', 'changeRate', 'bollRel1D', 'macd1D', 'kdj1D', 'volume']
     with Connect() as conn:
         cur = conn.execute(sql)
         for row in cur.fetchall():

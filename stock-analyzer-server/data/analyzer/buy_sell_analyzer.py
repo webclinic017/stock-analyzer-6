@@ -1,6 +1,6 @@
 import pandas as pd
 
-from data.analyzer.utils import calc_boll, calc_macd
+from data.analyzer.utils import calc_boll, calc_macd, calc_kdj
 from data.analyzer.utils import (
     get_prices, get_price_change, get_last_price, get_ticker_name, get_ticker_volume
 )
@@ -18,7 +18,6 @@ def _boll_analysis(ticker):
     res = (close - boll[-1]) / (upper[-1] - lower[-1]) * 2
     if pd.isnull(res):
         res = 0
-    print(res)
     return res
 
 
@@ -40,14 +39,33 @@ def _macd_analysis(ticker):
     return ''
 
 
+# Buy sell based on KDJ
+def _kdj_analysis(ticker):
+    prices = get_prices(ticker, 100)
+    k, d, j = calc_kdj(prices)
+    try:
+        a = k[-1] - d[-1]
+        b = k[-2] - d[-2]
+        if a * b <= 0:
+            if 70 < k[-1] <= d[-1]:
+                return 'HDC'  # High death cross
+            elif d[-1] <= k[-1] < 30:
+                return 'LGC'  # Low gold cross
+    except:
+        return ''
+    return ''
+
+
 def _analyse_buy_sell(ticker):
     try:
         name = get_ticker_name(ticker)
         price = get_last_price(ticker)
         _, increase_rate = get_price_change(ticker)
         volume = get_ticker_volume(ticker)
-        boll = _boll_analysis(ticker)
-        return ticker, name, price, increase_rate, boll, volume
+        boll_1d = _boll_analysis(ticker)
+        macd_1d = _macd_analysis(ticker)
+        kdj_1d = _kdj_analysis(ticker)
+        return ticker, name, price, increase_rate, boll_1d, macd_1d, kdj_1d, volume
     except:
         print('Skip {}'.format(get_ticker_name(ticker)))
         return []
@@ -65,7 +83,7 @@ def _analyse_all_tickers():
 def _save_ticker_results(data):
     setup_buy_sell_table()
     with Connect() as conn:
-        conn.executemany('INSERT INTO buy_sell VALUES (?,?,?,?,?,?)', data)
+        conn.executemany('INSERT INTO buy_sell VALUES (?,?,?,?,?,?,?, ?)', data)
         conn.commit()
 
 
