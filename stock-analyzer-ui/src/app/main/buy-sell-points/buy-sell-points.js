@@ -80,6 +80,20 @@ const segmentValueCellStyle = (upper, lower, range) => ({ value }) => {
   }
 };
 
+const upDownCellStyle = ({ value }) => {
+  const colorMap = {
+    'SU': `rgb(0, 224, 0)`,
+    'DD': `rgb(224, 0, 0)`,
+  }
+  if (value !== '') {
+    return {
+      backgroundColor: colorMap[value], color: '#fff'
+    };
+  } else {
+    return {};
+  }
+}
+
 
 const BuySellPoints = () => {
   const [gridApi, setGridApi] = useState(null);
@@ -117,8 +131,6 @@ const BuySellPoints = () => {
 
   const defaultColDef = { sortable: true, filter: true, resizable: true };
 
-  console.log(rowData);
-
   return (
     <div>
       <div className='ag-theme-balham-dark' style={{ width: '100%', height: 900 }}>
@@ -137,6 +149,8 @@ const BuySellPoints = () => {
           <AgGridColumn field='bias' type='rightAligned' cellStyle={segmentValueCellStyle(15, -12, 15)} 
             valueFormatter={numberFormatter}></AgGridColumn>
           <AgGridColumn field='ma20' type='rightAligned' cellStyle={ma20SignCellStyle}></AgGridColumn>
+          <AgGridColumn field='closeVsMa20' type='rightAligned' headerName='C. vs Ma20'
+            cellStyle={upDownCellStyle}></AgGridColumn>
           <AgGridColumn field='biasPct' type='rightAligned' valueFormatter={numberFormatter}
             cellStyle={biasPctCellStyle}></AgGridColumn>
           <AgGridColumn field='bollRel1D' cellStyle={segmentValueCellStyle(0.9, -0.9, 0.3)} headerName='Boll Rel1D'

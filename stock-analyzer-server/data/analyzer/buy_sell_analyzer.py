@@ -28,7 +28,7 @@ def _bias_analysis(ticker):
 
 
 # MA 20
-def _ma_20_analysis(ticker):
+def _ma_20_trend_analysis(ticker):
     prices = get_prices(ticker, 500)
     mas = calc_ma(prices, 20)
     try:
@@ -36,6 +36,20 @@ def _ma_20_analysis(ticker):
             return 'TU'
         elif mas[-2] == max(mas[-8:]):
             return 'TD'
+    except:
+        return ''
+    return ''
+
+
+def _close_vs_ma20_analysis(ticker):
+    prices = get_prices(ticker, 500)
+    try:
+        mas = calc_ma(prices, 20)[-10:]
+        closes = [p[3] for p in prices[-10:]]
+        if all(ma >= close for ma, close in zip(mas[:9], closes[:9])) and mas[-1] <= closes[-1]:
+            return 'SU'
+        elif all(ma <= close for ma, close in zip(mas[:9], closes[:9])) and mas[-1] >= closes[-1]:
+            return 'DD'
     except:
         return ''
     return ''
@@ -94,12 +108,14 @@ def _analyse_buy_sell(ticker):
         price = get_last_price(ticker)
         _, increase_rate = get_price_change(ticker)
         volume = get_ticker_volume(ticker)
-        ma20 = _ma_20_analysis(ticker)
+        ma20_trend = _ma_20_trend_analysis(ticker)
+        close_vs_ma20 = _close_vs_ma20_analysis(ticker)
         bias, bias_pct = _bias_analysis(ticker)
         boll_1d = _boll_analysis(ticker)
         macd_1d = _macd_analysis(ticker)
         kdj_1d = _kdj_analysis(ticker)
-        return ticker, name, price, increase_rate, ma20, bias, bias_pct, boll_1d, macd_1d, kdj_1d, volume
+        return ticker, name, price, increase_rate, ma20_trend, close_vs_ma20, bias, bias_pct, boll_1d, \
+               macd_1d, kdj_1d, volume
     except:
         print('Skip {}'.format(get_ticker_name(ticker)))
         return []
@@ -117,7 +133,7 @@ def _analyse_all_tickers():
 def _save_ticker_results(data):
     setup_buy_sell_table()
     with Connect() as conn:
-        conn.executemany('INSERT INTO buy_sell VALUES (?,?,?,?,?,?,?,?,?,?, ?)', data)
+        conn.executemany('INSERT INTO buy_sell VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', data)
         conn.commit()
 
 
