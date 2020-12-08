@@ -47,19 +47,3 @@ export const bgGreenRedColorMapCellStyle = threshold => params => {
     return {};
   }
 };
-
-export const segmentColorCellStyle = (upper, lower, range) => ({ value }) => {
-  if (value > upper) {
-    let degree = Math.min((value-upper)/range, 1);
-    return {
-      backgroundColor: `rgb(0, ${degree * 64 + 144}, 0)`, color: '#fff'
-    };
-  } else if (value < lower) {
-    let degree = Math.min((lower-value)/range, 1);
-    return {
-      backgroundColor: `rgb(${degree * 64 + 144}, 0, 0)`, color: '#fff'
-    };
-  } else {
-    return {};
-  }
-};

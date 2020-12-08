@@ -1,6 +1,7 @@
 import pandas as pd
+import bisect
 
-from data.analyzer.utils import calc_boll, calc_macd, calc_kdj
+from data.analyzer.utils import calc_ma, calc_boll, calc_macd, calc_kdj
 from data.analyzer.utils import (
     get_prices, get_price_change, get_last_price, get_ticker_name, get_ticker_volume
 )
@@ -9,11 +10,42 @@ from data.db import setup_buy_sell_table, Connect
 from tqdm import tqdm
 
 
+# Bias percentile
+def _bias_analysis(ticker):
+    """ Bias percentile is too large, should sell """
+    prices = get_prices(ticker, 2000)
+    mas = calc_ma(prices, 20)
+    closes = [p[3] for p in prices]
+    biases = [close/ma for ma, close in zip(mas, closes)]
+    biases = [val for val in biases if val > 0]
+    biases = sorted(biases)
+    bias = closes[-1]/mas[-1]
+    if not pd.isnull(bias) and not pd.isna(bias):
+        index = bisect.bisect(biases, closes[-1]/mas[-1])
+        return (bias - 1) * 100, index / len(biases)
+    else:
+        return float('nan'), float('nan')
+
+
+# MA 20
+def _ma_20_analysis(ticker):
+    prices = get_prices(ticker, 500)
+    mas = calc_ma(prices, 20)
+    try:
+        if mas[-2] == min(mas[-8:]):
+            return 'TU'
+        elif mas[-2] == max(mas[-8:]):
+            return 'TD'
+    except:
+        return ''
+    return ''
+
+
 # Buy sell based on boll values
 def _boll_analysis(ticker):
     """ if res > 1, should sell, if val < 1, should buy, others remain """
     prices = get_prices(ticker, 100)
-    boll, upper, lower = calc_boll(prices)
+    boll, lower, upper = calc_boll(prices)
     close = prices[-1][3]
     res = (close - boll[-1]) / (upper[-1] - lower[-1]) * 2
     if pd.isnull(res):
@@ -62,10 +94,12 @@ def _analyse_buy_sell(ticker):
         price = get_last_price(ticker)
         _, increase_rate = get_price_change(ticker)
         volume = get_ticker_volume(ticker)
+        ma20 = _ma_20_analysis(ticker)
+        bias, bias_pct = _bias_analysis(ticker)
         boll_1d = _boll_analysis(ticker)
         macd_1d = _macd_analysis(ticker)
         kdj_1d = _kdj_analysis(ticker)
-        return ticker, name, price, increase_rate, boll_1d, macd_1d, kdj_1d, volume
+        return ticker, name, price, increase_rate, ma20, bias, bias_pct, boll_1d, macd_1d, kdj_1d, volume
     except:
         print('Skip {}'.format(get_ticker_name(ticker)))
         return []
@@ -83,7 +117,7 @@ def _analyse_all_tickers():
 def _save_ticker_results(data):
     setup_buy_sell_table()
     with Connect() as conn:
-        conn.executemany('INSERT INTO buy_sell VALUES (?,?,?,?,?,?,?, ?)', data)
+        conn.executemany('INSERT INTO buy_sell VALUES (?,?,?,?,?,?,?,?,?,?, ?)', data)
         conn.commit()
 
 

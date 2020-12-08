@@ -3,13 +3,38 @@ import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
 
 import { SERVER_BASE_URL } from '../../constants';
-import { numberFormatter, numberWithSignFormatter, pctWithSignFormatter, volumeFormatter, 
-  priceAndChangeCellStyle, segmentColorCellStyle } from '../../../common-grid/formatter';
+import { numberFormatter, numberWithSignFormatter, pctWithSignFormatter, 
+  volumeFormatter, priceAndChangeCellStyle } from '../../../common-grid/formatter';
 
 // AG Grid
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
 
+const ma20SignCellStyle = ({ value }) => {
+  const colorMap = {
+    'TU': `rgb(0, 192, 0)`,
+    'TD': `rgb(192, 0, 0)`
+  };
+  if (value !== '') {
+    return {
+      backgroundColor: colorMap[value], color: '#fff'
+    };
+  } else {
+    return {};
+  }
+};
+
+const biasPctCellStyle = ({ value }) => {
+  const threshold = 0.9;
+  if (value > threshold) {
+    let degree = (value-threshold)/(1-threshold);
+    return {
+      backgroundColor: `rgb(${degree * 64 + 144}, 0, 0)`, color: '#fff'
+    };
+  } else {
+    return {};
+  }
+};
 
 const macdSignCellStyle = ({ value }) => {
   const colorMap = {
@@ -33,6 +58,22 @@ const kdjSignCellStyle = ({ value }) => {
   if (value !== '') {
     return {
       backgroundColor: colorMap[value], color: '#fff'
+    };
+  } else {
+    return {};
+  }
+};
+
+const segmentValueCellStyle = (upper, lower, range) => ({ value }) => {
+  if (value > upper) {
+    let degree = Math.min((value-upper)/range, 1);
+    return {
+      backgroundColor: `rgb(${degree * 64 + 144}, 0, 0)`, color: '#fff'
+    };
+  } else if (value < lower) {
+    let degree = Math.min((lower-value)/range, 1);
+    return {
+      backgroundColor: `rgb(0, ${degree * 64 + 144}, 0)`, color: '#fff'
     };
   } else {
     return {};
@@ -93,7 +134,12 @@ const BuySellPoints = () => {
             type='rightAligned' valueFormatter={numberFormatter}></AgGridColumn>
           <AgGridColumn field='changeRate' cellStyle={priceAndChangeCellStyle} headerName='Change (%)'
             type='rightAligned' valueFormatter={pctWithSignFormatter}></AgGridColumn>
-          <AgGridColumn field='bollRel1D' cellStyle={segmentColorCellStyle(0.9, -0.9, 0.3)} headerName='Boll Rel1D'
+          <AgGridColumn field='bias' type='rightAligned' cellStyle={segmentValueCellStyle(15, -12, 15)} 
+            valueFormatter={numberFormatter}></AgGridColumn>
+          <AgGridColumn field='ma20' type='rightAligned' cellStyle={ma20SignCellStyle}></AgGridColumn>
+          <AgGridColumn field='biasPct' type='rightAligned' valueFormatter={numberFormatter}
+            cellStyle={biasPctCellStyle}></AgGridColumn>
+          <AgGridColumn field='bollRel1D' cellStyle={segmentValueCellStyle(0.9, -0.9, 0.3)} headerName='Boll Rel1D'
             type='rightAligned' valueFormatter={numberWithSignFormatter}></AgGridColumn>
           <AgGridColumn field='macd1D' type='rightAligned' cellStyle={macdSignCellStyle}></AgGridColumn>
           <AgGridColumn field='kdj1D' type='rightAligned' cellStyle={kdjSignCellStyle}></AgGridColumn>
