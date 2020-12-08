@@ -3,8 +3,8 @@ import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
 
 import { SERVER_BASE_URL } from '../../constants';
-import { numberFormatter, numberWithSignFormatter, pctWithSignFormatter, 
-  volumeFormatter, priceAndChangeCellStyle } from '../../../common-grid/formatter';
+import { numberFormatter, numberWithSignFormatter, pctWithSignFormatter, volumeFormatter, 
+  priceAndChangeCellStyle, idCellRenderer } from '../../../common-grid/formatter';
 
 // AG Grid
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -140,7 +140,7 @@ const BuySellPoints = () => {
           onFirstDataRendered={onFirstDataRendered}
           defaultColDef={defaultColDef}
         >
-          <AgGridColumn field='id'></AgGridColumn>
+          <AgGridColumn field='id' cellRenderer={idCellRenderer}></AgGridColumn>
           <AgGridColumn field='name'></AgGridColumn>
           <AgGridColumn field='price' cellStyle={priceAndChangeCellStyle} headerName='Last Price'
             type='rightAligned' valueFormatter={numberFormatter}></AgGridColumn>

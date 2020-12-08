@@ -28,6 +28,9 @@ class Navbar extends Component {
             <MDBNavItem>
               <MDBNavLink to='/buy-sell-points'>买点卖点</MDBNavLink>
             </MDBNavItem>
+            <MDBNavItem>
+              <MDBNavLink to='/stock-view/0700.HK'>股票行情</MDBNavLink>
+            </MDBNavItem>
           </MDBNavbarNav>
         </MDBCollapse>
       </MDBNavbar>

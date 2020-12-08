@@ -47,3 +47,9 @@ export const bgGreenRedColorMapCellStyle = threshold => params => {
     return {};
   }
 };
+
+// Common used cell renderer
+export const idCellRenderer = params => {
+  const id = params.node.data.id;
+  return `<a href ='/stock-view/${id}' style='color: #fff'>${id}</>`;
+};

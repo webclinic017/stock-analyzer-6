@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import BuySellPoints from './buy-sell-points';
+import StockView from './stock-view';
 import StrongStocks from './strong-stocks';
 
 const Main = () => (
@@ -12,6 +13,9 @@ const Main = () => (
       </Route>
       <Route path='/buy-sell-points'>
         <BuySellPoints />
+      </Route>
+      <Route path='/stock-view/:id'>
+        <StockView />
       </Route>
       <Route path='/'>
         <StrongStocks />
